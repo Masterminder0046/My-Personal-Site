@@ -1,0 +1,6 @@
+{
+  "name": "Interactive Developer Portfolio",
+  "description": "A premium, award-winning digital portfolio experience featuring immersive storytelling, fluid physics-based motion, bento grid layouts, and an interactive skills galaxy.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
