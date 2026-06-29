@@ -50,10 +50,10 @@ async function startServer() {
         secure: smtpPort === 465,
         family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
         auth: {
-          user: smtpUser,
-          pass: smtpPass
+          user: smtpUser as string,
+          pass: smtpPass as string
         }
-      });
+      } as any);
 
       // Send Email to the Portfolio Owner (Sheik)
       const ownerEmailHtml = `

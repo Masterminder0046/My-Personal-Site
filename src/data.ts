@@ -1,7 +1,7 @@
 import { Project, Service, ExperienceItem, BlogArticle, Testimonial } from './types';
 
 export const HERO_DATA = {
-  name: "Alexander Sterling",
+  name: "Sheik Mohammed",
   title: "Creative Technologist",
   subtitle: "Building the Next Era of Digital Experiences",
   scrambleWords: [
@@ -30,7 +30,7 @@ export const PROJECTS_DATA: Project[] = [
     tags: ["React", "Express", "Gemini AI", "Tailwind v4", "Docker"],
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
     demoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/Masterminder0046/AI-PROJECT-MANAGEMENT-SITE.git",
     metric: "40% Efficiency Gain",
     keyFeatures: [
       "Natural Language prompt-to-workspace builder",
@@ -66,7 +66,7 @@ export const PROJECTS_DATA: Project[] = [
     tags: ["React", "Django", "MySQL", "Tailwind CSS", "REST API"],
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
     demoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/Masterminder0046/EduAttend-Institutional-Attendance-Tracker-.git",
     metric: "99.9% Audit Accuracy",
     keyFeatures: [
       "Ultra-low latency web auditing dashboards",

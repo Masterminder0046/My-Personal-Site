@@ -52,12 +52,12 @@ export default function Experience() {
       duration: "2022 – 2026",
       description: "Acquiring core knowledge of computer graphics, database optimization, backend servers, and algorithmic logic.",
       details: [
-        "Maintained an excellent Cumulative Grade Point Average (CGPA) of 7.9.",
+        "Maintained an excellent Cumulative Grade Point Average (CGPA) of 8.1.",
         "Won 1st Prize in Inter-College Logo Design competition.",
         "Led graphics content design and paper presentations for campus tech fests."
       ],
       type: "education",
-      badge: "Degree / CGPA: 7.9"
+      badge: "Degree / CGPA: 8.1"
     }
   ];
 

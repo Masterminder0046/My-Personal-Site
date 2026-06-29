@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, ArrowDown, Github, Linkedin, Mail, ExternalLink, Terminal, Brain, Layers } from 'lucide-react';
+import { ArrowRight, ArrowDown, Github, Linkedin, Mail, ExternalLink, Terminal, Brain, Layers, Download } from 'lucide-react';
 
 export default function Hero() {
   const handleProjectsClick = () => {
@@ -152,6 +152,15 @@ export default function Hero() {
               Get In Touch
               <Mail className="w-4 h-4 text-purple-600" />
             </button>
+
+            <a
+              href="/resume.pdf"
+              download="Sheik_Mohamed_Resume.pdf"
+              className="group flex items-center gap-2 px-7 py-3.5 bg-blue-50/50 border border-blue-100 text-blue-700 hover:bg-blue-100 rounded-2xl font-display font-semibold text-sm shadow-sm hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+            >
+              Download Resume
+              <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-300" />
+            </a>
           </motion.div>
 
           {/* Elegant Social Connect Row */}
@@ -163,7 +172,7 @@ export default function Hero() {
           >
             <span className="font-mono text-xs text-gray-400 font-semibold tracking-wider uppercase">Connect:</span>
             <a 
-              href="https://github.com/sheikmohamed0046" 
+              href="https://github.com/Masterminder0046" 
               target="_blank" 
               rel="noreferrer" 
               className="p-2.5 rounded-full bg-white border border-gray-100 text-gray-600 hover:text-blue-600 hover:border-blue-100 shadow-sm transition-all duration-300 hover:scale-110"
@@ -171,7 +180,7 @@ export default function Hero() {
               <Github className="w-4 h-4" />
             </a>
             <a 
-              href="https://linkedin.com" 
+              href="https://www.linkedin.com/in/sheik-tech" 
               target="_blank" 
               rel="noreferrer" 
               className="p-2.5 rounded-full bg-white border border-gray-100 text-gray-600 hover:text-blue-600 hover:border-blue-100 shadow-sm transition-all duration-300 hover:scale-110"
@@ -273,7 +282,7 @@ export default function Hero() {
             className="absolute bottom-1/4 -left-6 z-20 w-32 h-32 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full shadow-2xl shadow-purple-500/20 flex flex-col items-center justify-center p-4"
           >
             <Layers className="w-6 h-6 text-white mb-1" />
-            <div className="text-white font-black text-lg leading-tight">CGPA 7.9</div>
+            <div className="text-white font-black text-lg leading-tight">CGPA 8.1</div>
             <div className="text-[9px] text-purple-100 uppercase font-medium tracking-wide">Computer Science</div>
           </motion.div>
 

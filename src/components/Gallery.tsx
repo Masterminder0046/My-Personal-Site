@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Eye, Award, X, ZoomIn, Image, ChevronRight } from 'lucide-react';
+import techFestImg from '../assets/tech_fest_deck.png';
 
 interface GalleryItem {
   id: string;
@@ -30,7 +31,7 @@ export default function Gallery() {
       title: "Tech Fest Event Promotional Deck",
       category: "Creative Direction",
       description: "Official slide layouts and visual branding templates engineered for St. Anne's college technical symposia events.",
-      image: "https://images.unsplash.com/photo-1542744094-3a31f103e35f?auto=format&fit=crop&w=800&q=80",
+      image: techFestImg,
       badge: "Symposium Theme",
       details: "Created a high-contrast futuristic visual identity. Integrated cohesive neon gradients, custom display headings, and slide structures that received wide praise from attendees."
     },

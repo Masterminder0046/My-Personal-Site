@@ -31,7 +31,7 @@ export default function Projects() {
       tags: ["Python", "Django", "DRF", "PostgreSQL", "Redis", "Web-sockets", "Docker", "JavaScript"],
       image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
       demoUrl: "https://saas-frontend-gs2l.onrender.com/",
-      githubUrl: "https://github.com/sheikmohamed0046",
+      githubUrl: "https://github.com/Masterminder0046/AI-PROJECT-MANAGEMENT-SITE.git",
       metric: "Real-time task synchronization",
       keyFeatures: [
         "Django Rest Framework backend with clean API serialization",
@@ -50,7 +50,7 @@ export default function Projects() {
       tags: ["Python", "Flask", "REST API", "HTML5", "CSS3", "JavaScript", "MySQL"],
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
       demoUrl: "#",
-      githubUrl: "https://github.com/sheikmohamed0046",
+      githubUrl: "https://github.com/Masterminder0046/support_system.git",
       metric: "99.9% Ticket Accountability",
       keyFeatures: [
         "Lightweight Flask backend serving rapid REST endpoints",
@@ -87,7 +87,7 @@ export default function Projects() {
       tags: ["Python", "Django", "MySQL", "REST API", "Responsive Design"],
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
       demoUrl: "#",
-      githubUrl: "https://github.com/sheikmohamed0046",
+      githubUrl: "https://github.com/Masterminder0046/EduAttend-Institutional-Attendance-Tracker-.git",
       metric: "100% Secure Auditing",
       keyFeatures: [
         "Django MVC structures enforcing absolute route safety",

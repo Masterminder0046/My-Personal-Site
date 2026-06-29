@@ -31,7 +31,7 @@ export default function Testimonials() {
       role: "Founder & Director",
       company: "Coderz Academy",
       email: "contactcoderz@gmail.com",
-      comment: "During his 6-month specialized certification, Sheik excelled in both React.js client architecture and MySQL query structuring. He has a brilliant aptitude for creating high-performance relational database structures.",
+      comment: "Sheik excelled in his 6-month certification, proving skills in both client-side and server-side development. He pairs strong HTML/CSS/JS and React.js architecture skills with robust Python and Django backend development, alongside a brilliant aptitude for creating high-performance MySQL database structures.",
       rating: 5,
       tags: ["Database Persistence", "React.js Stack", "Problem Solving"]
     }
