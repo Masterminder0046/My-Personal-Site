@@ -44,16 +44,27 @@ async function startServer() {
       }
 
       // Configure SMTP transporter
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
-        auth: {
-          user: smtpUser as string,
-          pass: smtpPass as string
-        }
-      } as any);
+      const isGmail = smtpHost.includes('gmail');
+      const transporter = nodemailer.createTransport(
+        (isGmail 
+          ? {
+              service: 'gmail',
+              auth: {
+                user: smtpUser as string,
+                pass: smtpPass as string
+              }
+            }
+          : {
+              host: smtpHost,
+              port: smtpPort,
+              secure: smtpPort === 465,
+              family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
+              auth: {
+                user: smtpUser as string,
+                pass: smtpPass as string
+              }
+            }) as any
+      );
 
       // Send Email to the Portfolio Owner (Sheik)
       const ownerEmailHtml = `
@@ -81,15 +92,19 @@ async function startServer() {
         </div>
       `;
 
-      await transporter.sendMail({
-        from: `"${name} (Portfolio Inquiry)" <${smtpUser}>`,
-        to: receiverEmail,
-        replyTo: email,
-        subject: `[Portfolio Inquiry] ${subject || 'New Contact Request'} - from ${name}`,
-        html: ownerEmailHtml
-      });
-
-      console.log('✅ Owner notification email sent successfully.');
+      try {
+        await transporter.sendMail({
+          from: `"${name} (Portfolio Inquiry)" <${smtpUser}>`,
+          to: receiverEmail,
+          replyTo: email,
+          subject: `[Portfolio Inquiry] ${subject || 'New Contact Request'} - from ${name}`,
+          html: ownerEmailHtml
+        });
+        console.log('✅ Owner notification email sent successfully.');
+      } catch (ownerError: any) {
+        console.error('Owner Email Failed:', ownerError);
+        return res.status(500).json({ error: 'Delivery failed. If using Gmail on Render, ensure you have an App Password configured.' });
+      }
 
       // Send greeting auto-reply to the visitor
       const visitorGreetingHtml = `
@@ -118,14 +133,18 @@ async function startServer() {
         </div>
       `;
 
-      await transporter.sendMail({
-        from: `"Sheik Mohamed" <${smtpUser}>`,
-        to: email,
-        subject: `Thank you for contacting Sheik Mohamed!`,
-        html: visitorGreetingHtml
-      });
-
-      console.log('✅ Auto-reply greeting email sent successfully.');
+      try {
+        await transporter.sendMail({
+          from: `"Sheik Mohamed" <${smtpUser}>`,
+          to: email,
+          subject: `Thank you for contacting Sheik Mohamed!`,
+          html: visitorGreetingHtml
+        });
+        console.log('✅ Auto-reply greeting email sent successfully.');
+      } catch (autoReplyError: any) {
+        console.error('Auto-Reply Failed:', autoReplyError);
+        // Do not crash the request if only the auto-reply fails
+      }
 
       return res.json({ success: true, simulated: false });
     } catch (error: any) {
