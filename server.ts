@@ -17,11 +17,11 @@ async function startServer() {
   app.use(express.json());
 
   // SMTP Settings
-  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const receiverEmail = process.env.RECEIVER_EMAIL || 'sshamu46@gmail.com';
+  const smtpHost = (process.env.SMTP_HOST || 'smtp.gmail.com').replace(/^['"]|['"]$/g, '');
+  const smtpPort = parseInt((process.env.SMTP_PORT || '587').replace(/^['"]|['"]$/g, ''), 10);
+  const smtpUser = process.env.SMTP_USER?.replace(/^['"]|['"]$/g, '');
+  const smtpPass = process.env.SMTP_PASS?.replace(/^['"]|['"]$/g, '');
+  const receiverEmail = (process.env.RECEIVER_EMAIL || 'sshamu46@gmail.com').replace(/^['"]|['"]$/g, '');
 
   // 1. SMTP Email Sending & Auto-Reply API
   app.post('/api/contact', async (req, res) => {
@@ -49,6 +49,7 @@ async function startServer() {
         (isGmail 
           ? {
               service: 'gmail',
+              family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
               auth: {
                 user: smtpUser as string,
                 pass: smtpPass as string
