@@ -44,28 +44,16 @@ async function startServer() {
       }
 
       // Configure SMTP transporter
-      const isGmail = smtpHost.includes('gmail');
-      const transporter = nodemailer.createTransport(
-        (isGmail 
-          ? {
-              service: 'gmail',
-              family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
-              auth: {
-                user: smtpUser as string,
-                pass: smtpPass as string
-              }
-            }
-          : {
-              host: smtpHost,
-              port: smtpPort,
-              secure: smtpPort === 465,
-              family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
-              auth: {
-                user: smtpUser as string,
-                pass: smtpPass as string
-              }
-            }) as any
-      );
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
+        auth: {
+          user: smtpUser as string,
+          pass: smtpPass as string
+        }
+      } as any);
 
       // Send Email to the Portfolio Owner (Sheik)
       const ownerEmailHtml = `
@@ -104,7 +92,10 @@ async function startServer() {
         console.log('✅ Owner notification email sent successfully.');
       } catch (ownerError: any) {
         console.error('Owner Email Failed:', ownerError);
-        return res.status(500).json({ error: 'Delivery failed. If using Gmail on Render, ensure you have an App Password configured.' });
+        return res.status(500).json({ 
+          error: 'Delivery failed. If using Gmail on Render, ensure you have an App Password configured.',
+          details: ownerError?.message || String(ownerError)
+        });
       }
 
       // Send greeting auto-reply to the visitor
