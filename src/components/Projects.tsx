@@ -51,7 +51,7 @@ export default function Projects() {
       tags: ["React", "Node.js", "MongoDB", "Python", "Gemini AI", "Scikit-learn"],
       image: hashCareerImg,
       demoUrl: "https://hash-career.onrender.com/login",
-      githubUrl: "https://github.com/sheikmohamed0046",
+      githubUrl: "https://github.com/Masterminder0046/Hash_Career.git",
       metric: "95% Prediction Accuracy",
       keyFeatures: [
         "Role-based portals for Students, Placement Officers, and Admins with custom analytical views",

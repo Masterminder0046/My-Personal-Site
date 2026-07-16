@@ -61,6 +61,7 @@ export default function Skills() {
       glowColor: "rgba(6, 182, 212, 0.15)",
       skills: [
         { name: "MySQL", level: "Intermediate", description: "Relational database tables, index definitions, and transactional joins.", icon: "🐬" },
+        { name: "MongoDB", level: "Intermediate", description: "NoSQL document storage, database clustering, aggregations, and schema design.", icon: "🍃" },
         { name: "Oracle SQL", level: "Intermediate", description: "Enterprise schemas, sub-queries, stored structures, and dataset filters.", icon: "🟥" },
         { name: "PostgreSQL", level: "Intermediate", description: "Structured database queries, schema design, and local environment integration.", icon: "🐘" },
         { name: "Git & GitHub", level: "Advanced", description: "Branch isolation, secure pull requests, staging, merge resolution, and repos.", icon: "🐙" },

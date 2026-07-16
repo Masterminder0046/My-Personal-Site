@@ -186,12 +186,12 @@ How can I assist you in building together today?`;
 5. 📊 **Insight Presence System**: A hybrid attendance auditor displaying analytics charts powered by Django and MySQL.
 6. 🔍 **AI Resume Enhancer**: A smart parser analyzing document match scores against target jobs.`;
       } 
-      else if (msg.includes('skill') || msg.includes('tech') || msg.includes('language') || msg.includes('code') || msg.includes('python') || msg.includes('django') || msg.includes('react') || msg.includes('database') || msg.includes('postgres') || msg.includes('mysql') || msg.includes('javascript')) {
+      else if (msg.includes('skill') || msg.includes('tech') || msg.includes('language') || msg.includes('code') || msg.includes('python') || msg.includes('django') || msg.includes('react') || msg.includes('database') || msg.includes('postgres') || msg.includes('mysql') || msg.includes('mongo') || msg.includes('javascript')) {
         replyText = `Sheik Mohamed's technical capabilities include:
-
+ 
 • 🎨 **Frontend Engineering**: React.js, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, GSAP, motion transitions, Figma wireframing, Canva layouting.
 • ⚙️ **Backend Development**: Python, Django, Flask, Django REST Framework, MVC architectures, Celery async triggers, Redis queue loops.
-• 💾 **Databases & Tools**: PostgreSQL, MySQL, Oracle SQL, SQLite, query structure indexing, relational schemas, Git/GitHub, Docker containerization.`;
+• 💾 **Databases & Tools**: MongoDB, PostgreSQL, MySQL, Oracle SQL, SQLite, query structure indexing, relational schemas, Git/GitHub, Docker containerization.`;
       } 
       else if (msg.includes('experience') || msg.includes('job') || msg.includes('intern') || msg.includes('work') || msg.includes('history')) {
         replyText = `Sheik has valuable experience as a **Front-end Developer Intern** (Remote, April 2025 - May 2025):
