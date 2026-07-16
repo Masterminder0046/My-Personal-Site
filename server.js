@@ -39,6 +39,9 @@ async function startServer() {
         secure: smtpPort === 465,
         family: 4,
         // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
+        lookup: (hostname, options, callback) => {
+          return dns.lookup(hostname, { ...options, family: 4 }, callback);
+        },
         auth: {
           user: smtpUser,
           pass: smtpPass
