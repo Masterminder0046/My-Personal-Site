@@ -169,21 +169,22 @@ async function startServer() {
 
 I have Sheik's complete resume loaded in my local memory. Feel free to ask me about:
 1. 🎨 **Technical Skills** (React, Python, Django, Databases)
-2. 🚀 **Featured Projects** (Synapse AI SaaS, Support System, TravelMate)
+2. 🚀 **Featured Projects** (HASH Career, Synapse AI SaaS, Support System)
 3. 🎓 **Education & Certifications** (Anna University B.E., Coderz Academy)
 4. 💼 **Experience** (Frontend Developer Intern roles)
 5. 📬 **Contact & Hiring Availability** (Try the contact form for automatic SMTP greetings!)
 
 How can I assist you in building together today?`;
       } 
-      else if (msg.includes('project') || msg.includes('synapse') || msg.includes('support') || msg.includes('travelmate') || msg.includes('insight') || msg.includes('resume') || msg.includes('portfolio') || msg.includes('app')) {
+      else if (msg.includes('project') || msg.includes('synapse') || msg.includes('support') || msg.includes('travelmate') || msg.includes('insight') || msg.includes('resume') || msg.includes('portfolio') || msg.includes('app') || msg.includes('hash')) {
         replyText = `Sheik has engineered several high-integrity software products:
 
-1. 🚀 **Synapse** (AI-Powered SaaS): A premium project management dashboard built with Python, Django, DRF, PostgreSQL, Redis, WebSockets, and Docker. It features real-time synchronization and AI-driven tasks. Live link: [synapse-render](https://saas-frontend-gs2l.onrender.com/)
-2. 🎫 **Support System App**: A complete help-desk ticketing suite built with Flask and MySQL with complete admin dashboards, category indexings, and user role tracking.
-3. 🗺️ **TravelMate AI Planner**: An interactive companion itinerary generator matching a React.js client structure and a Flask API.
-4. 📊 **Insight Presence System**: A hybrid attendance auditor displaying analytics charts powered by Django and MySQL.
-5. 🔍 **AI Resume Enhancer**: A smart parser analyzing document match scores against target jobs.`;
+1. 🎯 **HASH Career** (AI Placement Intelligence Platform): An AI-powered placement platform featuring role-based portals for Students, Placement Officers, and Admins. Built using React, Node.js, MongoDB, Python, Gemini AI, and Scikit-learn. Live link: [HASH Career login](https://hash-career.onrender.com/login)
+2. 🚀 **Synapse** (AI-Powered SaaS): A premium project management dashboard built with Python, Django, DRF, PostgreSQL, Redis, WebSockets, and Docker. It features real-time synchronization and AI-driven tasks. Live link: [synapse-render](https://saas-frontend-gs2l.onrender.com/)
+3. 🎫 **Support System App**: A complete help-desk ticketing suite built with Flask and MySQL with complete admin dashboards, category indexings, and user role tracking.
+4. 🗺️ **TravelMate AI Planner**: An interactive companion itinerary generator matching a React.js client structure and a Flask API.
+5. 📊 **Insight Presence System**: A hybrid attendance auditor displaying analytics charts powered by Django and MySQL.
+6. 🔍 **AI Resume Enhancer**: A smart parser analyzing document match scores against target jobs.`;
       } 
       else if (msg.includes('skill') || msg.includes('tech') || msg.includes('language') || msg.includes('code') || msg.includes('python') || msg.includes('django') || msg.includes('react') || msg.includes('database') || msg.includes('postgres') || msg.includes('mysql') || msg.includes('javascript')) {
         replyText = `Sheik Mohamed's technical capabilities include:

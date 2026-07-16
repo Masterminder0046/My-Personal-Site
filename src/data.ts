@@ -1,4 +1,5 @@
 import { Project, Service, ExperienceItem, BlogArticle, Testimonial } from './types';
+import hashCareerImg from './assets/hash_career_dashboard.png';
 
 export const HERO_DATA = {
   name: "Sheik Mohammed",
@@ -21,6 +22,25 @@ export const HERO_DATA = {
 };
 
 export const PROJECTS_DATA: Project[] = [
+  {
+    id: "hash-career",
+    title: "HASH Career — AI Placement Intelligence Platform",
+    description: "An AI-powered placement platform featuring role-based access, Gemini AI resume evaluation, and Random Forest placement prediction.",
+    longDescription: "Developed an AI-powered placement platform with role-based access for Students, Placement Officers, and Admins. Integrated Gemini AI for resume analysis, ATS scoring, interview evaluation, and personalized career roadmaps. Built a Random Forest ML model for placement prediction and implemented company matching with skill-gap analysis. Designed a responsive React frontend and RESTful Node.js/Express backend with interactive analytics dashboards.",
+    category: "AI & Full-Stack",
+    tags: ["React", "Node.js", "MongoDB", "Python", "Gemini AI", "Scikit-learn"],
+    image: hashCareerImg,
+    demoUrl: "https://hash-career.onrender.com/login",
+    githubUrl: "https://github.com/sheikmohamed0046",
+    metric: "95% Prediction Accuracy",
+    keyFeatures: [
+      "Role-based portals for Students, Placement Officers, and Admins with custom analytical views",
+      "Gemini AI integration for resume optimization, ATS scoring, and interview prep guides",
+      "Random Forest classification model mapping student profiles to hiring probability scores",
+      "Company criteria matching system highlighting critical skill gaps for targeted learning paths"
+    ],
+    isFeatured: true
+  },
   {
     id: "ai-saas",
     title: "AI Project Management SaaS",
