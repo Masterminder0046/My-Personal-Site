@@ -6,6 +6,21 @@ import path from "path";
 import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import dns from "dns";
+var originalLookup = dns.lookup;
+dns.lookup = function(hostname, options, callback) {
+  if (typeof options === "function") {
+    callback = options;
+    options = {};
+  }
+  if (hostname && (hostname.includes("gmail") || hostname.includes("google") || hostname.includes("smtp"))) {
+    if (typeof options === "object") {
+      options = { ...options, family: 4 };
+    } else {
+      options = 4;
+    }
+  }
+  return originalLookup(hostname, options, callback);
+};
 dns.setDefaultResultOrder("ipv4first");
 dotenv.config();
 var __filename = fileURLToPath(import.meta.url);

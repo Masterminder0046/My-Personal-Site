@@ -6,6 +6,25 @@ import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
 import dns from 'dns';
 
+// Global DNS lookup override to force IPv4 on Render for Google/SMTP servers
+const originalLookup = dns.lookup;
+(dns as any).lookup = function (hostname: string, options: any, callback: any) {
+  if (typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
+  
+  if (hostname && (hostname.includes('gmail') || hostname.includes('google') || hostname.includes('smtp'))) {
+    if (typeof options === 'object') {
+      options = { ...options, family: 4 };
+    } else {
+      options = 4;
+    }
+  }
+  
+  return originalLookup(hostname, options, callback);
+};
+
 dns.setDefaultResultOrder('ipv4first');
 dotenv.config();
 
