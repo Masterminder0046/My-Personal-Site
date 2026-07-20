@@ -32,7 +32,8 @@ async function startServer() {
   const smtpPort = parseInt((process.env.SMTP_PORT || "587").replace(/^['"]|['"]$/g, ""), 10);
   const smtpUser = process.env.SMTP_USER?.replace(/^['"]|['"]$/g, "");
   const smtpPass = process.env.SMTP_PASS?.replace(/^['"]|['"]$/g, "");
-  const receiverEmail = (process.env.RECEIVER_EMAIL || "sshamu46@gmail.com").replace(/^['"]|['"]$/g, "");
+  const receiverEmail = (process.env.RECEIVER_EMAIL || "sheikmohamed0046@gmail.com").replace(/^['"]|['"]$/g, "");
+  const resendApiKey = process.env.RESEND_API_KEY?.replace(/^['"]|['"]$/g, "");
   app.post("/api/contact", async (req, res) => {
     try {
       const { name, email, subject, message } = req.body;
@@ -40,28 +41,6 @@ async function startServer() {
         return res.status(400).json({ error: "Name, email, and message are required fields." });
       }
       console.log(`[Contact Inquiry] name: ${name}, email: ${email}, subject: ${subject}`);
-      if (!smtpUser || !smtpPass) {
-        console.warn("\u26A0\uFE0F SMTP credentials are not configured in environment. Running simulation...");
-        return res.json({
-          success: true,
-          simulated: true,
-          message: "Inquiry received in simulation mode! Configure SMTP_USER and SMTP_PASS to enable real email transmission."
-        });
-      }
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        family: 4,
-        // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
-        lookup: (hostname, options, callback) => {
-          return dns.lookup(hostname, { ...options, family: 4 }, callback);
-        },
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        }
-      });
       const ownerEmailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 16px; background-color: #ffffff;">
           <h2 style="font-size: 18px; font-weight: bold; color: #111827; margin-bottom: 20px; border-bottom: 1px solid #f3f4f6; padding-bottom: 12px;">\u{1F4EC} New Portfolio Consultation Inquiry</h2>
@@ -86,22 +65,6 @@ async function startServer() {
           <p style="font-size: 11px; color: #9ca3af; text-align: center; margin-top: 24px; font-family: monospace;">SMTP Auto-Delivery Engine \u2022 Portfolio Lab</p>
         </div>
       `;
-      try {
-        await transporter.sendMail({
-          from: `"${name} (Portfolio Inquiry)" <${smtpUser}>`,
-          to: receiverEmail,
-          replyTo: email,
-          subject: `[Portfolio Inquiry] ${subject || "New Contact Request"} - from ${name}`,
-          html: ownerEmailHtml
-        });
-        console.log("\u2705 Owner notification email sent successfully.");
-      } catch (ownerError) {
-        console.error("Owner Email Failed:", ownerError);
-        return res.status(500).json({
-          error: "Delivery failed. If using Gmail on Render, ensure you have an App Password configured.",
-          details: ownerError?.message || String(ownerError)
-        });
-      }
       const visitorGreetingHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; border: 1px solid #e5e7eb; border-radius: 24px; background-color: #ffffff; text-align: left;">
           <div style="margin-bottom: 24px;">
@@ -127,6 +90,97 @@ async function startServer() {
           </div>
         </div>
       `;
+      if (resendApiKey) {
+        console.log("\u{1F4EC} RESEND_API_KEY detected. Sending email via Resend HTTP API (Port 443)...");
+        try {
+          const ownerResponse = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${resendApiKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              from: "Portfolio Inquiry <onboarding@resend.dev>",
+              to: receiverEmail,
+              subject: `[Portfolio Inquiry] ${subject || "New Contact Request"} - from ${name}`,
+              html: ownerEmailHtml
+            })
+          });
+          if (!ownerResponse.ok) {
+            const errorText = await ownerResponse.text();
+            throw new Error(`Resend API Owner Email error: ${ownerResponse.status} - ${errorText}`);
+          }
+          console.log("\u2705 Owner notification email sent successfully via Resend API.");
+        } catch (ownerError) {
+          console.error("Owner Email Failed via Resend:", ownerError);
+          return res.status(500).json({
+            error: "Delivery failed via Resend HTTP API.",
+            details: ownerError?.message || String(ownerError)
+          });
+        }
+        try {
+          const visitorResponse = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${resendApiKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              from: "Sheik Mohamed <onboarding@resend.dev>",
+              to: email,
+              subject: `Thank you for contacting Sheik Mohamed!`,
+              html: visitorGreetingHtml
+            })
+          });
+          if (visitorResponse.ok) {
+            console.log("\u2705 Auto-reply greeting email sent successfully via Resend API.");
+          } else {
+            const errorText = await visitorResponse.text();
+            console.warn(`\u26A0\uFE0F Resend API Auto-Reply failed (possibly due to Resend Free Tier restriction): ${visitorResponse.status} - ${errorText}`);
+          }
+        } catch (autoReplyError) {
+          console.error("Auto-Reply Failed via Resend:", autoReplyError);
+        }
+        return res.json({ success: true, simulated: false });
+      }
+      if (!smtpUser || !smtpPass) {
+        console.warn("\u26A0\uFE0F SMTP credentials are not configured in environment. Running simulation...");
+        return res.json({
+          success: true,
+          simulated: true,
+          message: "Inquiry received in simulation mode! Configure SMTP_USER and SMTP_PASS or RESEND_API_KEY to enable real email transmission."
+        });
+      }
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        family: 4,
+        // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
+        lookup: (hostname, options, callback) => {
+          return dns.lookup(hostname, { ...options, family: 4 }, callback);
+        },
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        }
+      });
+      try {
+        await transporter.sendMail({
+          from: `"${name} (Portfolio Inquiry)" <${smtpUser}>`,
+          to: receiverEmail,
+          replyTo: email,
+          subject: `[Portfolio Inquiry] ${subject || "New Contact Request"} - from ${name}`,
+          html: ownerEmailHtml
+        });
+        console.log("\u2705 Owner notification email sent successfully.");
+      } catch (ownerError) {
+        console.error("Owner Email Failed:", ownerError);
+        return res.status(500).json({
+          error: "Delivery failed. If using Gmail on Render, ensure you have an App Password configured.",
+          details: ownerError?.message || String(ownerError)
+        });
+      }
       try {
         await transporter.sendMail({
           from: `"Sheik Mohamed" <${smtpUser}>`,
@@ -140,8 +194,8 @@ async function startServer() {
       }
       return res.json({ success: true, simulated: false });
     } catch (error) {
-      console.error("SMTP Transmission Error:", error);
-      return res.status(500).json({ error: error.message || "SMTP email delivery failed." });
+      console.error("SMTP/Resend Transmission Error:", error);
+      return res.status(500).json({ error: error.message || "Email delivery failed." });
     }
   });
   app.post("/api/chat", (req, res) => {

@@ -40,9 +40,10 @@ async function startServer() {
   const smtpPort = parseInt((process.env.SMTP_PORT || '587').replace(/^['"]|['"]$/g, ''), 10);
   const smtpUser = process.env.SMTP_USER?.replace(/^['"]|['"]$/g, '');
   const smtpPass = process.env.SMTP_PASS?.replace(/^['"]|['"]$/g, '');
-  const receiverEmail = (process.env.RECEIVER_EMAIL || 'sshamu46@gmail.com').replace(/^['"]|['"]$/g, '');
+  const receiverEmail = (process.env.RECEIVER_EMAIL || 'sheikmohamed0046@gmail.com').replace(/^['"]|['"]$/g, '');
+  const resendApiKey = process.env.RESEND_API_KEY?.replace(/^['"]|['"]$/g, '');
 
-  // 1. SMTP Email Sending & Auto-Reply API
+  // 1. SMTP & Resend Email Sending & Auto-Reply API
   app.post('/api/contact', async (req, res) => {
     try {
       const { name, email, subject, message } = req.body;
@@ -51,31 +52,6 @@ async function startServer() {
       }
 
       console.log(`[Contact Inquiry] name: ${name}, email: ${email}, subject: ${subject}`);
-
-      // If SMTP credentials are not configured, simulate transmission gracefully
-      if (!smtpUser || !smtpPass) {
-        console.warn('⚠️ SMTP credentials are not configured in environment. Running simulation...');
-        return res.json({
-          success: true,
-          simulated: true,
-          message: 'Inquiry received in simulation mode! Configure SMTP_USER and SMTP_PASS to enable real email transmission.'
-        });
-      }
-
-      // Configure SMTP transporter
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
-        lookup: (hostname: string, options: any, callback: any) => {
-          return dns.lookup(hostname, { ...options, family: 4 }, callback);
-        },
-        auth: {
-          user: smtpUser as string,
-          pass: smtpPass as string
-        }
-      } as any);
 
       // Send Email to the Portfolio Owner (Sheik)
       const ownerEmailHtml = `
@@ -102,23 +78,6 @@ async function startServer() {
           <p style="font-size: 11px; color: #9ca3af; text-align: center; margin-top: 24px; font-family: monospace;">SMTP Auto-Delivery Engine • Portfolio Lab</p>
         </div>
       `;
-
-      try {
-        await transporter.sendMail({
-          from: `"${name} (Portfolio Inquiry)" <${smtpUser}>`,
-          to: receiverEmail,
-          replyTo: email,
-          subject: `[Portfolio Inquiry] ${subject || 'New Contact Request'} - from ${name}`,
-          html: ownerEmailHtml
-        });
-        console.log('✅ Owner notification email sent successfully.');
-      } catch (ownerError: any) {
-        console.error('Owner Email Failed:', ownerError);
-        return res.status(500).json({ 
-          error: 'Delivery failed. If using Gmail on Render, ensure you have an App Password configured.',
-          details: ownerError?.message || String(ownerError)
-        });
-      }
 
       // Send greeting auto-reply to the visitor
       const visitorGreetingHtml = `
@@ -147,6 +106,108 @@ async function startServer() {
         </div>
       `;
 
+      // 1A. Use Resend HTTP API if configured
+      if (resendApiKey) {
+        console.log('📬 RESEND_API_KEY detected. Sending email via Resend HTTP API (Port 443)...');
+        try {
+          const ownerResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: 'Portfolio Inquiry <onboarding@resend.dev>',
+              to: receiverEmail,
+              subject: `[Portfolio Inquiry] ${subject || 'New Contact Request'} - from ${name}`,
+              html: ownerEmailHtml
+            })
+          });
+
+          if (!ownerResponse.ok) {
+            const errorText = await ownerResponse.text();
+            throw new Error(`Resend API Owner Email error: ${ownerResponse.status} - ${errorText}`);
+          }
+          console.log('✅ Owner notification email sent successfully via Resend API.');
+        } catch (ownerError: any) {
+          console.error('Owner Email Failed via Resend:', ownerError);
+          return res.status(500).json({
+            error: 'Delivery failed via Resend HTTP API.',
+            details: ownerError?.message || String(ownerError)
+          });
+        }
+
+        try {
+          const visitorResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: 'Sheik Mohamed <onboarding@resend.dev>',
+              to: email,
+              subject: `Thank you for contacting Sheik Mohamed!`,
+              html: visitorGreetingHtml
+            })
+          });
+
+          if (visitorResponse.ok) {
+            console.log('✅ Auto-reply greeting email sent successfully via Resend API.');
+          } else {
+            const errorText = await visitorResponse.text();
+            console.warn(`⚠️ Resend API Auto-Reply failed (possibly due to Resend Free Tier restriction): ${visitorResponse.status} - ${errorText}`);
+          }
+        } catch (autoReplyError: any) {
+          console.error('Auto-Reply Failed via Resend:', autoReplyError);
+        }
+
+        return res.json({ success: true, simulated: false });
+      }
+
+      // 1B. Use standard Nodemailer SMTP
+      // If SMTP credentials are not configured, simulate transmission gracefully
+      if (!smtpUser || !smtpPass) {
+        console.warn('⚠️ SMTP credentials are not configured in environment. Running simulation...');
+        return res.json({
+          success: true,
+          simulated: true,
+          message: 'Inquiry received in simulation mode! Configure SMTP_USER and SMTP_PASS or RESEND_API_KEY to enable real email transmission.'
+        });
+      }
+
+      // Configure SMTP transporter
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        family: 4, // Force IPv4 to avoid Render's IPv6 ENETUNREACH issues
+        lookup: (hostname: string, options: any, callback: any) => {
+          return dns.lookup(hostname, { ...options, family: 4 }, callback);
+        },
+        auth: {
+          user: smtpUser as string,
+          pass: smtpPass as string
+        }
+      } as any);
+
+      try {
+        await transporter.sendMail({
+          from: `"${name} (Portfolio Inquiry)" <${smtpUser}>`,
+          to: receiverEmail,
+          replyTo: email,
+          subject: `[Portfolio Inquiry] ${subject || 'New Contact Request'} - from ${name}`,
+          html: ownerEmailHtml
+        });
+        console.log('✅ Owner notification email sent successfully.');
+      } catch (ownerError: any) {
+        console.error('Owner Email Failed:', ownerError);
+        return res.status(500).json({ 
+          error: 'Delivery failed. If using Gmail on Render, ensure you have an App Password configured.',
+          details: ownerError?.message || String(ownerError)
+        });
+      }
+
       try {
         await transporter.sendMail({
           from: `"Sheik Mohamed" <${smtpUser}>`,
@@ -157,13 +218,12 @@ async function startServer() {
         console.log('✅ Auto-reply greeting email sent successfully.');
       } catch (autoReplyError: any) {
         console.error('Auto-Reply Failed:', autoReplyError);
-        // Do not crash the request if only the auto-reply fails
       }
 
       return res.json({ success: true, simulated: false });
     } catch (error: any) {
-      console.error('SMTP Transmission Error:', error);
-      return res.status(500).json({ error: error.message || 'SMTP email delivery failed.' });
+      console.error('SMTP/Resend Transmission Error:', error);
+      return res.status(500).json({ error: error.message || 'Email delivery failed.' });
     }
   });
 
