@@ -119,6 +119,7 @@ async function startServer() {
             body: JSON.stringify({
               from: 'Portfolio Inquiry <onboarding@resend.dev>',
               to: receiverEmail,
+              reply_to: email, // Allows replying directly to the visitor who contacted you
               subject: `[Portfolio Inquiry] ${subject || 'New Contact Request'} - from ${name}`,
               html: ownerEmailHtml
             })
